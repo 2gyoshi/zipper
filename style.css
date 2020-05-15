@@ -1,0 +1,59 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body, main {
+    width: 100%;
+    height: 100%;
+}
+
+input {
+    display: block;
+}
+
+.zipper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.left {
+    width: 50%;
+    height: 100%;
+    background: blue;
+    transform-origin: 100% 100%;
+    /* transform: skewX(30deg); */
+}
+
+.right {
+    width: 50%;
+    height: 100%;
+    background: blue;
+    transform-origin: 0 100%;
+    /* transform: skewX(-30deg); */
+}
+
+.center {
+    width: 100vh;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform-origin: 0% 100%;
+    transform: translate(-8px, -16px) rotate(90deg);
+    z-index: 2;
+}
+
+ .range-input {
+    width: 100%;
+    z-index: 2;
+}
+
+.range-value {
+    position: absolute;
+}
+
+.triangle {
+    position: absolute;
+}
