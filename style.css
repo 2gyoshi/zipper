@@ -10,7 +10,13 @@ html, body, main {
 }
 
 input {
-    display: block;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+input:focus,
+input:active {
+  outline: none;
 }
 
 .zipper {
@@ -24,6 +30,9 @@ input {
     height: 100%;
     background: blue;
     transform-origin: 100% 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
     /* transform: skewX(30deg); */
 }
 
@@ -32,28 +41,40 @@ input {
     height: 100%;
     background: blue;
     transform-origin: 0 100%;
+    position: absolute;
+    top: 0;
+    left: 50%;
     /* transform: skewX(-30deg); */
 }
 
 .center {
     width: 100vh;
+    height: 100%;
+    display: flex;
+    align-items: center;
     position: absolute;
     left: 50%;
     top: 0;
-    transform-origin: 0% 100%;
-    transform: translate(-8px, -16px) rotate(90deg);
+    transform: translateX(-50%) rotate(90deg);
     z-index: 2;
 }
 
- .range-input {
+.input-range {
+    background-color: #eaeaea;
+    height: 2px;
     width: 100%;
-    z-index: 2;
-}
-
-.range-value {
-    position: absolute;
-}
-
-.triangle {
-    position: absolute;
+    border-radius: 6px;
+}  
+  
+.input-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    width: 22px;
+    height: 22px;
+    display: block;
+    background-color: #07be19;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
 }
