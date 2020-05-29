@@ -4,47 +4,36 @@
     padding: 0;
 }
 
-html, body, main {
+html, body {
     width: 100%;
     height: 100%;
 }
 
-input {
-    -webkit-appearance: none;
-    appearance: none;
-}
-
-input:focus,
-input:active {
-  outline: none;
-}
-
-.zipper {
+/* area */
+.wrapper {
     width: 100%;
     height: 100%;
-    display: flex;
+    position: relative;
+    color: transparent;
+    overflow: hidden;
 }
 
 .left {
     width: 50%;
     height: 100%;
-    background: blue;
-    transform-origin: 100% 100%;
     position: absolute;
     top: 0;
     left: 0;
-    /* transform: skewX(30deg); */
+    z-index: 1;
 }
 
 .right {
     width: 50%;
     height: 100%;
-    background: blue;
-    transform-origin: 0 100%;
     position: absolute;
     top: 0;
-    left: 50%;
-    /* transform: skewX(-30deg); */
+    right: 0;
+    z-index: 2;
 }
 
 .center {
@@ -52,29 +41,89 @@ input:active {
     height: 100%;
     display: flex;
     align-items: center;
+    justify-content: center;
     position: absolute;
-    left: 50%;
     top: 0;
+    left: 50%;
     transform: translateX(-50%) rotate(90deg);
-    z-index: 2;
+    z-index: 3;
 }
 
-.input-range {
-    background-color: #eaeaea;
-    height: 2px;
+/* element */
+li { 
     width: 100%;
-    border-radius: 6px;
-}  
-  
-.input-range::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    cursor: pointer;
     position: relative;
-    width: 22px;
-    height: 22px;
+}
+
+.left li {
+    background-color: blue;
+}
+
+.left li::after {
+    width: 50px;
+    height: 50%;
+    content: '';
     display: block;
-    background-color: #07be19;
+    background: blue;
+    position: absolute;
+    top: 50%;
+    right: 0%;
+    transform: translate(50%, -50%);
+}
+
+.left li.move {
+    transform: translateX(-100px);
+}
+
+.right li {
+    background-color: red;
+}
+
+.right li::after {
+    display: block;
+    content: '';
+    width: 50px;
+    height: 50%;
+    background: red;
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(-50%, -50%);
+}
+
+.right li.move {
+    transform: translateX(100px);
+}
+
+/* slider */
+.zipper{
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.zipper::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.zipper:focus,
+.zipper:active {
+    outline: none;
+}
+
+.zipper {
+    width: 100%;
+    height: 50px;
+    background: transparent;
+    overflow: hidden;
+    border-radius: 500px;
+}
+
+.zipper::-webkit-slider-thumb {
+    width: 50px;
+    height: 50px;
+    display: block;
+    cursor: pointer;
     border-radius: 50%;
-    -webkit-border-radius: 50%;
+    background: #eaeaea;
 }
