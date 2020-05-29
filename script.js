@@ -1,30 +1,29 @@
-'usestrict'
+'use strict'
 
-window.onload   = init;
-window.onresize = init;
+window.addEventListener('load', init);
+window.addEventListener('resize', init);
 
-// レンジスライダーの値を表示する為のイベントを追加する
-function init() {
-    const body = document.querySelector('body');
-    const zipper = document.querySelector('.zipper');
+function init(){
+    const slider = document.querySelector('.slider');
     const elements = document.querySelectorAll('li');
-    
-    if(!body || !zipper || !elements) return;
-    
-    zipper.setAttribute('max', zipper.clientWidth);
-    zipper.addEventListener('input', changeValue);
 
-    const size = zipper.clientWidth / 10;
-    elements.forEach(e => e.style.height = `${size}px`);
+    if(!slider) return;
+
+    const max = slider.clientWidth;
+    slider.setAttribute('max', max);
+    slider.addEventListener('input', slide);
+
+    const height = max / 10;
+    elements.forEach(e => e.style.height = `${height}px`);
 }
 
-function changeValue() {
-    const zipper = document.querySelector('.zipper');
+function slide() {
+    const slider = document.querySelector('.slider');
     const elements = document.querySelectorAll('li');
 
-    if(!zipper || !elements) return;
+    if(!slider || !elements) return;
 
-    const progress = (zipper.value / zipper.clientWidth) * 100;
+    const progress = (slider.value / slider.clientWidth) * 100;
     elements.forEach(e => {
         if(Number(e.textContent <= progress)){
             e.classList.add('move');
@@ -33,3 +32,4 @@ function changeValue() {
         }
     });
 }
+

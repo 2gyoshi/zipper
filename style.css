@@ -9,8 +9,7 @@ html, body {
     height: 100%;
 }
 
-/* area */
-.wrapper {
+.zipper {
     width: 100%;
     height: 100%;
     position: relative;
@@ -24,7 +23,6 @@ html, body {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
 }
 
 .right {
@@ -33,7 +31,6 @@ html, body {
     position: absolute;
     top: 0;
     right: 0;
-    z-index: 2;
 }
 
 .center {
@@ -49,81 +46,100 @@ html, body {
     z-index: 3;
 }
 
-/* element */
 li { 
     width: 100%;
     position: relative;
 }
 
-.left li {
-    background-color: blue;
+li {
+    background-color: #000ABF;
 }
 
-.left li::after {
+.left li {
+    -webkit-box-shadow: inset -50px 0 0 #0078D7;
+    -moz-box-shadow: inset -50px 0 0 #0078D7;
+    box-shadow: inset -50px 0 0 #001387;
+}
+
+.right li {
+    -webkit-box-shadow: inset  50px 0 0 #3498db;
+    -moz-box-shadow: inset 50px 0 0 #3498db;
+    box-shadow: inset 50px 0 0 #001387;
+}
+
+li::after {
     width: 50px;
     height: 50%;
     content: '';
     display: block;
-    background: blue;
+    background: #bdc3c7;
+    z-index: 1;
+}
+
+.left li::after {
     position: absolute;
-    top: 50%;
+    top: 0;
     right: 0%;
-    transform: translate(50%, -50%);
+    transform: translateX(25%);
+}
+
+.right li::after {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-25%);
 }
 
 .left li.move {
     transform: translateX(-100px);
 }
 
-.right li {
-    background-color: red;
-}
-
-.right li::after {
-    display: block;
-    content: '';
-    width: 50px;
-    height: 50%;
-    background: red;
-    position: absolute;
-    top: 50%;
-    left: 0%;
-    transform: translate(-50%, -50%);
-}
-
 .right li.move {
     transform: translateX(100px);
 }
 
-/* slider */
-.zipper{
-    appearance: none;
+.slider{
     -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
-.zipper::-webkit-slider-thumb {
-    appearance: none;
-    -webkit-appearance: none;
+.slider {
+    width: 100%;
+    height: 100px;
+    background-color: transparent;
+    overflow: hidden;
 }
 
-.zipper:focus,
-.zipper:active {
+.slider:focus,
+.slider:active {
     outline: none;
 }
 
-.zipper {
-    width: 100%;
-    height: 50px;
-    background: transparent;
-    overflow: hidden;
-    border-radius: 500px;
-}
-
-.zipper::-webkit-slider-thumb {
-    width: 50px;
-    height: 50px;
-    display: block;
+/* Webkit */
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100px;
+    height: 100px;
+    background: #ffffff;
     cursor: pointer;
     border-radius: 50%;
-    background: #eaeaea;
+}
+
+/* Firefox */
+.slider::-moz-range-thumb {
+    appearance: none;
+    -moz-appearance: none;
+    width: 100px;
+    height: 100px;
+    background: #ffffff;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 0;
+}
+
+/* Firefoxでinput[type=range]クリック時に表示される点線を消す */
+.slider::-moz-focus-outer {
+    border: 0;
 }
