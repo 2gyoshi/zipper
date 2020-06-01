@@ -19,7 +19,8 @@ function init(){
     elements.forEach(e => e.style.height = `${height}px`);
 }
 
-function addEvent() {
+function addEvent(event) {
+    // setSlider(event)
     window.addEventListener('mousemove', test, false);
 }
 
@@ -65,27 +66,21 @@ function slide(event){
     const slider = document.querySelector('.slider');
     const handle = document.querySelector('.handle');
 
-    if(!slider) return;
+    if(!slider || !handle) return;
 
     // マウスの座標を取得する
     const my = event.clientY;
 
-    // 要素の座標を取得する
-    const sr = slider.getBoundingClientRect()
-    const sy = window.pageYOffset + sr.top;
+    // 引手の座標を取得する
+    const adjust = 60;
+    const hy = my - handle.clientHeight + adjust;
 
     // 要素を移動する
-    const distance = 5;
+    handle.style.position = 'absolute';
+    handle.style.top = `${hy}px`;
 
-    if(my > sy) {
-        slider.style.position = 'absolute';
-        slider.style.top = `${sy + distance}px`;
-    }
-
-    if(my < sy) {
-        slider.style.position = 'absolute';
-        slider.style.top = `${sy - distance}px`;
-    }
+    slider.style.position = 'absolute';
+    slider.style.top = `${hy - 50}px`
 }
 
 function move() {
@@ -96,15 +91,13 @@ function move() {
     if(!area || !slider || !elements) return;
 
     const sr = slider.getBoundingClientRect()
-    const sy = sr.top;
-
-    const progress = (sy / area.clientHeight) * 100;
+    const progress = (sr.bottom / area.clientHeight) * 100;
 
     elements.forEach(e => {
-        if(Number(e.textContent <= progress)){
-            e.classList.add('move');
+        if(Number(e.textContent < progress)){
+            e.classList.add('open');
         } else {
-            e.classList.remove('move');
+            e.classList.remove('open');
         }
     });
 }
@@ -113,7 +106,7 @@ function getPosition(target) {
     const position = {x: 0, y: 0};
 
     const tr = target.getBoundingClientRect();
-    position.x = window.pageXOffset + tr.left;
+    position.x = window.pageXOffset + tr.left + target.clientWidth / 2;
     position.y = window.pageYOffset + tr.top;
 
     if(!target.rotate) {
@@ -127,7 +120,7 @@ function getPosition(target) {
 
     if(target.rotate < -90) {
         position.x = window.pageXOffset + tr.left;
-        position.y = window.pageXOffset + tr.bottom;
+        position.y = window.pageYOffset + tr.bottom;
     }
 
     return position;
