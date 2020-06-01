@@ -132,3 +132,15 @@ function getPosition(target) {
 
     return position;
 }
+
+function resetSlider() {
+    const target = document.querySelector('.handle');
+
+    if(!target) return;
+
+    // 対象の要素を変形する
+    target.rotate = 0;
+    target.style.transformOrigin = `50% 0`;
+    target.style.transform = `translateX(-50%) rotate(0deg)`;
+    target.style.transition=  'all .5s ease';
+}
