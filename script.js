@@ -4,39 +4,36 @@ window.addEventListener('load', init);
 window.addEventListener('resize', init);
 
 function init(){
-    const area = document.querySelector('.center');
+    const line = document.querySelector('.line');
     const handle = document.querySelector('.handle');
     const elements = document.querySelectorAll('li');
 
-    if(!area || !handle || !elements) return;
-
+    if(!line || !handle || !elements) return;
 
     handle.addEventListener('mousedown', addEvent);
     window.addEventListener('mouseup', removeEvent);
 
-    const max = area.clientHeight;
+    const max = line.clientHeight;
     const height = max / 10;
     elements.forEach(e => e.style.height = `${height}px`);
 }
 
-function addEvent(event) {
-    // setSlider(event)
-    window.addEventListener('mousemove', test, false);
+function addEvent() {
+    window.addEventListener('mousemove', slide, false);
 }
 
 function removeEvent() {
-    window.removeEventListener('mousemove', test, false);
+    window.removeEventListener('mousemove', slide, false);
     resetSlider();
 }
 
-
-function test(event) {
-    rotate(event);
-    slide(event);
-    move();
+function slide(event) {
+    rotateHandle(event);
+    moveSlider(event);
+    setStatus(event);
 }
 
-function rotate(event) {
+function rotateHandle(event) {
     const target = document.querySelector('.handle');
 
     if(!target) return;
@@ -62,7 +59,7 @@ function rotate(event) {
 
 }
 
-function slide(event){
+function moveSlider(event){
     const slider = document.querySelector('.slider');
     const handle = document.querySelector('.handle');
 
@@ -72,34 +69,48 @@ function slide(event){
     const my = event.clientY;
 
     // 引手の座標を取得する
-    const adjust = 60;
+    const adjust = -50;
     const hy = my - handle.clientHeight + adjust;
 
     // 要素を移動する
-    handle.style.position = 'absolute';
-    handle.style.top = `${hy}px`;
-
     slider.style.position = 'absolute';
-    slider.style.top = `${hy - 50}px`
+    slider.style.top = `${hy}px`
+
 }
 
-function move() {
-    const area = document.querySelector('.center');
+function setStatus(event) {
     const slider = document.querySelector('.slider');
     const elements = document.querySelectorAll('li');
 
-    if(!area || !slider || !elements) return;
+    if(!slider || !elements) return;
 
-    const sr = slider.getBoundingClientRect()
-    const progress = (sr.bottom / area.clientHeight) * 100;
+    const progress = getProgress(event);
 
     elements.forEach(e => {
-        if(Number(e.textContent < progress)){
+        if(Number(e.innerText <= progress)){
             e.classList.add('open');
         } else {
             e.classList.remove('open');
         }
     });
+
+    if(progress === 100) {
+        slider.classList.add('end')
+    } else {
+        slider.classList.remove('end')
+    }
+}
+
+function resetSlider() {
+    const target = document.querySelector('.handle');
+
+    if(!target) return;
+
+    // 対象の要素を変形する
+    target.rotate = 0;
+    target.style.transformOrigin = `50% 0`;
+    target.style.transform = `translateX(-50%) rotate(0deg)`;
+    target.style.transition=  'all .5s ease';
 }
 
 function getPosition(target) {
@@ -126,14 +137,20 @@ function getPosition(target) {
     return position;
 }
 
-function resetSlider() {
-    const target = document.querySelector('.handle');
+function getProgress(event) {
+    const line = document.querySelector('.line');
+    const slider = document.querySelector('.slider');
 
-    if(!target) return;
+    if(!line || !slider) return result;
 
-    // 対象の要素を変形する
-    target.rotate = 0;
-    target.style.transformOrigin = `50% 0`;
-    target.style.transform = `translateX(-50%) rotate(0deg)`;
-    target.style.transition=  'all .5s ease';
+    const my = event.clientY;
+    const sr = slider.getBoundingClientRect();
+    const top = sr.top;
+
+    let progress = (top / line.clientHeight) * 100;
+    if(my >= line.clientHeight - 1) {
+        progress = 100;
+    }
+
+    return progress;
 }
