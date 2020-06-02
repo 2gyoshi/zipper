@@ -10,21 +10,47 @@ function init(){
 
     if(!line || !handle || !elements) return;
 
+    // PC
     handle.addEventListener('mousedown', addEvent);
     window.addEventListener('mouseup', removeEvent);
 
+    // iPhone Android
+    handle.addEventListener('touchstart', addEvent);
+    window.addEventListener('touchend', removeEvent);
+    
+    // ジッパーの歯のサイズを調整する
     const max = line.clientHeight;
     const height = max / 10;
     elements.forEach(e => e.style.height = `${height}px`);
 }
 
 function addEvent() {
+    // PC
     window.addEventListener('mousemove', slide, false);
+    
+    // iPhone Android
+    window.addEventListener('touchmove', mergeEventDifferenceForTouch, { passive: false });
 }
 
 function removeEvent() {
+    // PC
     window.removeEventListener('mousemove', slide, false);
+
+    // iPhone Android
+    window.addEventListener('touchmove', mergeEventDifferenceForTouch, { passive: false });
+
+    // スライダーの傾きをリセットする
     resetSlider();
+}
+
+function mergeEventDifferenceForTouch(event) {
+    // スクロールを無効にする
+    event.preventDefault();
+
+    const x = event.changedTouches[0].pageX;
+    const y = event.changedTouches[0].pageY;
+    const position = {clientX: x, clientY: y};
+    slide(position);
 }
 
 function slide(event) {
@@ -34,28 +60,28 @@ function slide(event) {
 }
 
 function rotateHandle(event) {
-    const target = document.querySelector('.handle');
+    const handle = document.querySelector('.handle');
 
-    if(!target) return;
+    if(!handle) return;
 
     // マウスの座標を取得する
     const mx = event.clientX;
     const my = event.clientY;
 
-    // 対象要素の座標を取得する
-    const position = getPosition(target);
+    // ハンドルの座標を取得する
+    const position = getPosition(handle);
     const tx = position.x;
     const ty = position.y;
 
-    // 対象の要素とマウスの座標環の角度を取得する
+    // ハンドルとマウスの座標環の角度を取得する
     const radian = Math.atan2(tx - mx, my - ty);
     const angle = radian * (180 / Math.PI);
 
-    // 対象の要素を変形する
-    target.rotate = angle;
-    target.style.transition = null;
-    target.style.transformOrigin = `50% 0`;
-    target.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+    // ハンドルを変形する
+    handle.rotate = angle;
+    handle.style.transition = null;
+    handle.style.transformOrigin = `50% 0`;
+    handle.style.transform = `translateX(-50%) rotate(${angle}deg)`;
 
 }
 
@@ -72,10 +98,9 @@ function moveSlider(event){
     const adjust = -50;
     const hy = my - handle.clientHeight + adjust;
 
-    // 要素を移動する
+    // スライダーを移動する
     slider.style.position = 'absolute';
     slider.style.top = `${hy}px`
-
 }
 
 function setStatus(event) {
@@ -86,6 +111,7 @@ function setStatus(event) {
 
     const progress = getProgress(event);
 
+    // ジッパーの歯を開いていく演出
     elements.forEach(e => {
         if(Number(e.innerText <= progress)){
             e.classList.add('open');
@@ -94,6 +120,7 @@ function setStatus(event) {
         }
     });
 
+    // ジッパーが開ききった演出
     if(progress === 100) {
         slider.classList.add('end')
     } else {
@@ -102,24 +129,28 @@ function setStatus(event) {
 }
 
 function resetSlider() {
-    const target = document.querySelector('.handle');
+    const handle = document.querySelector('.handle');
 
-    if(!target) return;
+    if(!handle) return;
 
-    // 対象の要素を変形する
-    target.rotate = 0;
-    target.style.transformOrigin = `50% 0`;
-    target.style.transform = `translateX(-50%) rotate(0deg)`;
-    target.style.transition=  'all .5s ease';
+    // 引手を変形する
+    handle.rotate = 0;
+    handle.style.transformOrigin = `50% 0`;
+    handle.style.transform = `translateX(-50%) rotate(0deg)`;
+    handle.style.transition=  'all .5s ease';
 }
 
 function getPosition(target) {
+    if(!target) return null;
+
     const position = {x: 0, y: 0};
 
+    // デフォルトでは要素の上部中心の座標を取得する
     const tr = target.getBoundingClientRect();
     position.x = window.pageXOffset + tr.left + target.clientWidth / 2;
     position.y = window.pageYOffset + tr.top;
 
+    // 要素の回転に応じて取得する座標を変更する
     if(!target.rotate) {
         return position;
     }
@@ -143,11 +174,16 @@ function getProgress(event) {
 
     if(!line || !slider) return result;
 
+    // スクロール位置を取得する
     const my = event.clientY;
-    const sr = slider.getBoundingClientRect();
-    const top = sr.top;
 
-    let progress = (top / line.clientHeight) * 100;
+    // スライダーの位置を取得する
+    const sp = getPosition(slider);
+
+    // スライダーの位置に応じて進捗率を計算する
+    let progress = (sp.y / line.clientHeight) * 100;
+
+    // 画面の最下部までスクロールされた場合進捗を100%とする
     if(my >= line.clientHeight - 1) {
         progress = 100;
     }
